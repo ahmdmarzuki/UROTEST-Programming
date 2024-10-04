@@ -13,7 +13,7 @@ class RobotA1():
         self.attack_type = 0
         self.current_health = 80
         self.total_health = 80
-        self.damage = 13
+        self.damage = 8
         self.player = player
         self.last_attack_time = 0
         self.attack_delay = 200
@@ -99,7 +99,7 @@ class RobotA2():
         self.attack_type = 0
         self.current_health = 100
         self.total_health = 100
-        self.damage = 10
+        self.damage = 6
         self.player = player
         self.last_attack_time = 0
         self.attack_delay = 200
@@ -182,10 +182,10 @@ class RobotA3():
         self.rect = pygame.Rect((x, y, 80 , 180))
         self.vel_y = 0
         self.attacking = False
-        self.current_health = 150
-        self.total_health = 150
+        self.current_health = 120
+        self.total_health = 120
         self.player = player
-        self.damage = 5
+        self.damage = 4
         self.last_attack_time = 0
         self.attack_delay = 200  
         

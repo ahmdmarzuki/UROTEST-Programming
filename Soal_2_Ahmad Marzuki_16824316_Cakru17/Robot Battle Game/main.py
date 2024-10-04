@@ -37,6 +37,8 @@ bg_image = pygame.image.load("assets/images/bg.jpeg").convert_alpha()
 
 winner = None
 
+
+
 # GameStateManager
 class GameStateManager:
     def __init__(self, currentState):
@@ -180,6 +182,13 @@ class Battle:
             self.game.robot_2.draw(self.display)
         else:
             print("Robots are not set")
+            
+        if (self.game.robot_1.current_healt <= 0):
+            winner = self.game.robot_1
+        elif (self.game.robot_2.current_healt <= 0):
+            winner = self.game.robot_2
+            
+            
 
 
 class WinScene():
@@ -194,6 +203,14 @@ class WinScene():
             self.display.blit(text_player_1_win, 0, 0)
         elif(winner == 2):
             self.display.blit(text_player_2_win, 0, 0)
+            
+    def winner_sprite(self):
+        self.blit()
+        
+        
+        
+    def rematch_button(self):
+        self.blit
         
     # def restart_button(self, x, y, width, height, active_color, inactive_color):
     #     mouse = pygame.mouse.get_pos()  
