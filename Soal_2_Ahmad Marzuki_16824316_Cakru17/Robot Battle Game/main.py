@@ -183,10 +183,14 @@ class Battle:
         else:
             print("Robots are not set")
             
-        if (self.game.robot_1.current_healt <= 0):
-            winner = self.game.robot_1
-        elif (self.game.robot_2.current_healt <= 0):
-            winner = self.game.robot_2
+        if (self.game.robot_1.current_health <= 0 or self.game.robot_2.current_healt <= 0):
+
+            self.gameStateManager.set_state('win_scene')
+    
+            if (self.game.robot_1.current_health <= 0):
+                winner = self.game.robot_1
+            elif (self.game.robot_2.current_health <= 0):
+                winner = self.game.robot_2
             
             
 
@@ -204,37 +208,39 @@ class WinScene():
         elif(winner == 2):
             self.display.blit(text_player_2_win, 0, 0)
             
-    def winner_sprite(self):
-        self.blit()
+    def winner_sprite(self, x, y, width, height):
+        pygame.draw.rect(self.display, (x, y, width, height))
         
         
         
-    def rematch_button(self):
-        self.blit
+    def rematch_button(self, x, y, width, height, active_color, inactive_color):
+        pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
         
-    # def restart_button(self, x, y, width, height, active_color, inactive_color):
-    #     mouse = pygame.mouse.get_pos()  
-    #     click = pygame.mouse.get_pressed()  
-    #     pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
         
-    #     if x + width > mouse[0] > x and y + height > mouse[1] > y:
-    #         pygame.draw.rect(self.display, active_color, (x, y, width, height))
+    
+        
+    def restart_button(self, x, y, width, height, active_color, inactive_color):
+        mouse = pygame.mouse.get_pos()  
+        click = pygame.mouse.get_pressed() 
+        clicking = False
+        pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
+        
+        if x + width > mouse[0] > x and y + height > mouse[1] > y:
+            pygame.draw.rect(self.display, active_color, (x, y, width, height))
             
 
-    #         if click[0] == 1 and not self.clicking:
-    #             self.clicking = True
-    #             if self.game.robot_1 is None:
-    #                 self.game.robot_1 = robot(1, 200, 340)
-    #                 print("Player 1: RobotA1 selected")
-    #             elif self.game.robot_2 is None:
-    #                 self.game.robot_2 = robot(2, 700, 340)
-    #                 print("Player 2: RobotA1 selected")
-    #         elif click[0] == 0:
-    #             self.clicking = False
+            if click[0] == 1 and not self.clicking:
+                self.clicking = True
+                self.gameStateManager.set_state('win_scene')
+            elif click[0] == 0:
+                self.clicking = False
             
     def run(self):
         self.draw_bg()
         self.display_text()
+        self.winner_sprite(460, 550, 80, 80,)
+        self.rematch_button(450, 150, 100, 30)
+        self.restart_button(450, 190, 100, 30)
         
     
         
