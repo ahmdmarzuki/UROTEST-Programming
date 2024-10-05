@@ -57,11 +57,13 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         
+        self.winner = winner
+        
         # robot attribute
         self.robot_1 = None
         self.robot_2 = None
 
-        self.gameStateManager = GameStateManager('win_scene')
+        self.gameStateManager = GameStateManager('start')
 
         # sceneee
         self.start = Start(self.screen, self.gameStateManager, self)
@@ -183,64 +185,79 @@ class Battle:
         else:
             print("Robots are not set")
             
-        if (self.game.robot_1.current_health <= 0 or self.game.robot_2.current_healt <= 0):
+        if (self.game.robot_1.current_health <= 0 or self.game.robot_2.current_health <= 0):
 
             self.gameStateManager.set_state('win_scene')
     
             if (self.game.robot_1.current_health <= 0):
-                winner = self.game.robot_1
+                winner = 2
+            
             elif (self.game.robot_2.current_health <= 0):
-                winner = self.game.robot_2
+                winner = 1
+                
             
             
 
 
 class WinScene():
-    def __init__(self, display, gameStateManager, winner):
+    def __init__(self, display, gameStateManager, game):
         self.display = display
+        self.bg_image = pygame.image.load("assets/images/winscene_bg.jpeg").convert_alpha()
+        self.game = game
     
     def draw_bg(self):
-        self.display.blit(WHITE, (0, 0))
+        scaled_bg = pygame.transform.scale(self.bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.display.blit(scaled_bg, (0, 0))
         
     def display_text(self):
         if(winner == 1):
-            self.display.blit(text_player_1_win, 0, 0)
+            self.display.blit(text_player_1_win, (500, 50))
+            print(winner)
         elif(winner == 2):
-            self.display.blit(text_player_2_win, 0, 0)
+            self.display.blit(text_player_2_win, (500, 50))
+            print(winner)
             
-    def winner_sprite(self, x, y, width, height):
-        pygame.draw.rect(self.display, (x, y, width, height))
+    # def winner_sprite(self, x, y, width, height):
+    #     pygame.draw.rect(self.display, (x, y, width, height))
         
         
         
-    def rematch_button(self, x, y, width, height, active_color, inactive_color):
-        pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
+    # def rematch_button(self, x, y, width, height, active_color, inactive_color):
+    #     pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
         
         
     
         
-    def restart_button(self, x, y, width, height, active_color, inactive_color):
-        mouse = pygame.mouse.get_pos()  
-        click = pygame.mouse.get_pressed() 
-        clicking = False
-        pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
+    # def restart_button(self, x, y, width, height, active_color, inactive_color):
+    #     mouse = pygame.mouse.get_pos()  
+    #     click = pygame.mouse.get_pressed() 
+    #     clicking = False
+    #     pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
         
-        if x + width > mouse[0] > x and y + height > mouse[1] > y:
-            pygame.draw.rect(self.display, active_color, (x, y, width, height))
+    #     if x + width > mouse[0] > x and y + height > mouse[1] > y:
+    #         pygame.draw.rect(self.display, active_color, (x, y, width, height))
             
 
-            if click[0] == 1 and not self.clicking:
-                self.clicking = True
-                self.gameStateManager.set_state('win_scene')
-            elif click[0] == 0:
-                self.clicking = False
+    #         if click[0] == 1 and not self.clicking:
+    #             self.clicking = True
+    #             self.gameStateManager.set_state('win_scene')
+    #         elif click[0] == 0:
+    #             self.clicking = False
             
     def run(self):
         self.draw_bg()
         self.display_text()
-        self.winner_sprite(460, 550, 80, 80,)
-        self.rematch_button(450, 150, 100, 30)
-        self.restart_button(450, 190, 100, 30)
+        
+        # screen.blit(text_player_1_win, (500, 50))
+        
+        # if(winner == 1):
+        #     screen.blit(text_player_1_win, (500, 50))
+        # elif(winner == 2):
+        #     screen.blit(text_player_2_win, (500, 50))
+            
+        # self.winner_sprite(460, 550, 80, 80,)
+        # self.rematch_button(450, 150, 100, 30)
+        # self.restart_button(450, 190, 100, 30)
         
     
         
