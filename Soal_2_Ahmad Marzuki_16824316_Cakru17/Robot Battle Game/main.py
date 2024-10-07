@@ -57,7 +57,8 @@ class Game:
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
         
-        self.winner = winner
+        self.winner = None
+        self.winner_sprite = None
         
         # robot attribute
         self.robot_1 = None
@@ -95,6 +96,7 @@ class Start:
         self.game = game
         self.start_bg_image = pygame.image.load("assets/images/start_bg.jpeg").convert_alpha()
         self.clicking = False
+        self.clock = pygame.time.Clock()
         
     def draw_bg(self):
         scaled_bg = pygame.transform.scale(self.start_bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -119,32 +121,51 @@ class Start:
                     print("Select both robots")
 
     # UI ROBOT 1
-    def draw_robot_gui(self, x, y, width, height, active_color, inactive_color, robot):
+    def draw_robot_gui(self, x, y, width, height, hovered_img, unselected_img, robot):
         mouse = pygame.mouse.get_pos()  
         click = pygame.mouse.get_pressed()  
-        pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
+        self.selected = False
+        
+        # pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
+        self.unselected_gui = pygame.image.load(unselected_img).convert_alpha()
+        self.hovered_gui = pygame.image.load(hovered_img).convert_alpha()
+        
+        scaled_unselected_gui = pygame.transform.scale(self.unselected_gui, (width, height))
+        scaled_hovered_gui = pygame.transform.scale(self.hovered_gui, (width, height))
+        
+        
+        self.display.blit(scaled_unselected_gui, (x, y))
+            
+            
         
         if x + width > mouse[0] > x and y + height > mouse[1] > y:
-            pygame.draw.rect(self.display, active_color, (x, y, width, height))
             
-
+            self.display.blit(scaled_hovered_gui, (x, y)) 
+            
             if click[0] == 1 and not self.clicking:
                 self.clicking = True
+                self.selected = True
+                self.display.blit(scaled_hovered_gui, (x, y)) 
+                print(self.selected)
                 if self.game.robot_1 is None:
                     self.game.robot_1 = robot(1, 200, 340)
                     print("Player 1: RobotA1 selected")
+                    print(game.robot_1)
+                    
                 elif self.game.robot_2 is None:
                     self.game.robot_2 = robot(2, 700, 340)
                     print("Player 2: RobotA1 selected")
+                    print(game.robot_2)
+                     
             elif click[0] == 0:
                 self.clicking = False
         
 
     def run(self):
         self.draw_bg()
-        self.draw_robot_gui(50, 90, 250, 320, RED, WHITE, RobotA1)
-        self.draw_robot_gui(380, 90, 250, 320, RED, WHITE, RobotA2)
-        self.draw_robot_gui(700, 90, 250, 320, RED, WHITE, RobotA3)
+        self.draw_robot_gui(50, 90, 250, 320, "assets/UI/robot_1_gui_hovered.png", "assets/UI/robot_1_gui_unselected.png", RobotA1)
+        self.draw_robot_gui(380, 90, 250, 320, "assets/UI/robot_1_gui_hovered.png", "assets/UI/robot_1_gui_unselected.png", RobotA2)
+        self.draw_robot_gui(700, 90, 250, 320, "assets/UI/robot_1_gui_hovered.png", "assets/UI/robot_1_gui_unselected.png", RobotA3)
         self.draw_clickable_rectangle(350, 500, 300, 50, LIGHT_BLUE, RED)
         if self.game.robot_1 is None:
             screen.blit(text_select_p1, (380, 20))
@@ -152,6 +173,9 @@ class Start:
             screen.blit(text_select_p2, (380, 20))
         elif self.game.robot_1 is not None and self.game.robot_2 is not None:
             screen.blit(text_start_game, (380, 20))
+            
+        pygame.display.update()
+        self.clock.tick(FPS)
             
             
 
@@ -181,6 +205,7 @@ class Battle:
 
             self.game.robot_1.move(SCREEN_WIDTH, SCREEN_HEIGHT, self.display, self.game.robot_2)
             self.game.robot_1.draw(self.display)
+            self.game.robot_2.move_p2(SCREEN_WIDTH, SCREEN_HEIGHT, self.display, self.game.robot_1)
             self.game.robot_2.draw(self.display)
         else:
             print("Robots are not set")
@@ -190,11 +215,14 @@ class Battle:
             self.gameStateManager.set_state('win_scene')
     
             if (self.game.robot_1.current_health <= 0):
-                winner = 2
+                self.game.winner = 2
+                self.game.winner_sprite = self.game.robot_2.image
             
             elif (self.game.robot_2.current_health <= 0):
-                winner = 1
+                self.game.winner = 1
+                self.game.winner_sprite = self.game.robot_1.image
                 
+            # print(self.game.winner_sprite)
             
             
 
@@ -204,65 +232,74 @@ class WinScene():
         self.display = display
         self.bg_image = pygame.image.load("assets/images/winscene_bg.jpeg").convert_alpha()
         self.game = game
+        self.gameStateManager = gameStateManager
     
     def draw_bg(self):
         scaled_bg = pygame.transform.scale(self.bg_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.display.blit(scaled_bg, (0, 0))
         
     def display_text(self):
-        if(winner == 1):
-            self.display.blit(text_player_1_win, (500, 50))
+        if(self.game.winner == 1):
+            self.display.blit(text_player_1_win, (420, 50))
             print(winner)
-        elif(winner == 2):
-            self.display.blit(text_player_2_win, (500, 50))
+        elif(self.game.winner == 2):
+            self.display.blit(text_player_2_win, (420, 50))
             print(winner)
             
-    # def winner_sprite(self, x, y, width, height):
-    #     pygame.draw.rect(self.display, (x, y, width, height))
+    def display_winner_sprite(self):
+        scaled_sprite = pygame.transform.scale(self.game.winner_sprite, (150, 150))
+        self.display.blit(scaled_sprite, (425, 110))
         
+    def rematch_button(self, x, y, width, height, active_color, inactive_color):
+        mouse = pygame.mouse.get_pos()  
+        click = pygame.mouse.get_pressed()  
         
+        pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
         
-    # def rematch_button(self, x, y, width, height, active_color, inactive_color):
-    #     pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
+        if x + width > mouse[0] > x and y + height > mouse[1] > y:
+            pygame.draw.rect(self.display, active_color, (x, y, width, height))
+            
+            if click[0] == 1:
+                self.game.robot_1.current_health =  self.game.robot_1.total_health
+                self.game.robot_2.current_health =  self.game.robot_2.total_health
+                self.game.robot_1.rect.x = 200
+                self.game.robot_2.rect.x = 700
+                self.game.robot_1.rect.y = 340
+                self.game.robot_2.rect.y = 340
+                self.gameStateManager.set_state('arena')
+                
+                # if self.game.robot_1 is not None and self.game.robot_2 is not None:
+                # else:
+                #     print("Select both robots")
         
         
     
         
-    # def restart_button(self, x, y, width, height, active_color, inactive_color):
-    #     mouse = pygame.mouse.get_pos()  
-    #     click = pygame.mouse.get_pressed() 
-    #     clicking = False
-    #     pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
+    def restart_button(self, x, y, width, height, active_color, inactive_color):
+        mouse = pygame.mouse.get_pos()  
+        click = pygame.mouse.get_pressed() 
+        clicking = False
+        pygame.draw.rect(self.display, inactive_color, (x, y, width, height))
         
-    #     if x + width > mouse[0] > x and y + height > mouse[1] > y:
-    #         pygame.draw.rect(self.display, active_color, (x, y, width, height))
+        if x + width > mouse[0] > x and y + height > mouse[1] > y:
+            pygame.draw.rect(self.display, active_color, (x, y, width, height))
             
-
-    #         if click[0] == 1 and not self.clicking:
-    #             self.clicking = True
-    #             self.gameStateManager.set_state('win_scene')
-    #         elif click[0] == 0:
-    #             self.clicking = False
+            if click[0] == 1:
+                self.gameStateManager.set_state('start')
+                self.game.robot_1 = None
+                self.game.robot_2 = None
+                self.game.winner = None
+                self.game.winner_sprite = None
             
     def run(self):
         self.draw_bg()
         self.display_text()
-        
-        # screen.blit(text_player_1_win, (500, 50))
-        
-        # if(winner == 1):
-        #     screen.blit(text_player_1_win, (500, 50))
-        # elif(winner == 2):
-        #     screen.blit(text_player_2_win, (500, 50))
-            
-        # self.winner_sprite(460, 550, 80, 80,)
-        # self.rematch_button(450, 150, 100, 30)
-        # self.restart_button(450, 190, 100, 30)
-        
+        self.display_winner_sprite()
+        self.rematch_button(420, 400, 90, 30, WHITE, RED)
+        self.restart_button(420, 500, 90, 30, WHITE, RED)
     
         
-        
-        
+    
 
 
 if __name__ == '__main__':
