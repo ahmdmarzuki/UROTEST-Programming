@@ -20,7 +20,7 @@ class RobotA1():
         self.damage = 8
         self.player = player
         self.last_attack_time = 0
-        self.attack_delay = 200
+        self.attack_delay = 200 
         
     def move(self, screen_width, screen_height, surface, target):
         SPEED = 10
