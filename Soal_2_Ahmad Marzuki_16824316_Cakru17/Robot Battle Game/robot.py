@@ -157,7 +157,7 @@ class RobotA2():
         self.flip = False
         self.rect = pygame.Rect((x, y, 130 , 130))
         
-        self.image = pygame.image.load("assets/Character/robot_1.png")  # Load sprite
+        self.image = pygame.image.load("assets/Character/robot_2.png")  # Load sprite
         self.scaled_image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))  # Rescale sprite
 
         self.vel_y = 0
@@ -303,7 +303,7 @@ class RobotA3():
         self.flip = False
         self.rect = pygame.Rect((x, y, 130 , 130))
         
-        self.image = pygame.image.load("assets/Character/robot_1.png")  # Load sprite
+        self.image = pygame.image.load("assets/Character/robot_3.png")  # Load sprite
         self.scaled_image = pygame.transform.scale(self.image, (self.rect.width, self.rect.height))  # Rescale sprite
 
         self.vel_y = 0
