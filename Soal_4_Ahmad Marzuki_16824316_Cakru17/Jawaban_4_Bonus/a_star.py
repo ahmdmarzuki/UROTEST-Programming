@@ -97,7 +97,7 @@ class Spot():
         return False
     
     
-# function h() mendefinisikan jarak dari point 1 (p1) ke point 2 (p2)
+# function h() adalah nilai heuristik yang mendefinisikan jarak dari point 1 (p1) ke point 2 (p2)
 def h(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
@@ -109,6 +109,8 @@ def reconstruct_path(came_from, current, draw):
         current.make_path()
         draw()
 
+
+# function algorithm memuat algoritma dari A* yang nantinya dapat dijalankan untuk memberikan nilai setiap node dan menunjukkan jalan terdekat dari start ke end point
 def algorithm(draw, grid, start, end):
     count = 0
     open_set = PriorityQueue()
@@ -129,7 +131,7 @@ def algorithm(draw, grid, start, end):
         current = open_set.get()[2]
         open_set_hash.remove(current)
         
-        # Jika sudah mencapai tujuan
+        # Jika sudah mencapai tujuan, maka akan menjalan kan function untuk menggambar path terdekat dari start point ke end point
         if current == end:
             reconstruct_path(came_from, end, draw)
             end.make_path()
@@ -146,12 +148,12 @@ def algorithm(draw, grid, start, end):
                     count += 1
                     open_set.put((f_score[neighbor], count, neighbor))
                     open_set_hash.add(neighbor)
-                    neighbor.make_open()  # Tetangga terbuka -> warna hijau
+                    neighbor.make_open()  
                     
-        draw()  # Perbarui tampilan setiap kali grid berubah
+        draw()  
         
         if current != start:
-            current.make_closed()  # Node yang sudah diproses -> warna merah
+            current.make_closed() 
             
     return False
 
@@ -194,7 +196,7 @@ def draw(win, grid, rows, width):
     pygame.display.update()
     
     
-# function get_clicked_pos akan mengambil posisi ketika left click mouse ditekan
+# function get_clicked_pos akan mengambil posisi kursor ketika mouse di klik
 def get_clicked_pos(pos, rows, width):
     gap = width // rows
     y, x = pos
@@ -206,7 +208,7 @@ def get_clicked_pos(pos, rows, width):
 
 
 
-# function main yang menjadi pusat menjalankan function-function yang lain 
+# function main yang menjadi pusat untuk menjalankan function-function yang lain 
 def main(windows, width):
     ROWS = 50
     grid = make_grid(ROWS, width)
@@ -228,8 +230,10 @@ def main(windows, width):
             if started:
                 continue
             
-            
-            # 
+            # LEFT MOUSE BUTTON ditekan untuk menggambar start point, end point, dan barrier pada spot dimana kursor mouse berada
+            # ketika start point belum ada, maka LEFT MOUSE BUTTON akan menggambar start point terlebih dahulu
+            # ketika start point sudah ada dan end point belum, maka akan menggambar end point
+            # ketika start dan end point sudah ada, maka akan menggambar barrier
             if pygame.mouse.get_pressed()[0]:
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
@@ -246,7 +250,7 @@ def main(windows, width):
                     spot.make_barrier()
                     
                     
-                
+            # RIGHT MOUSE BUTTON untuk menghapus spot yang sudah digambar
             elif pygame.mouse.get_pressed()[2]:
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
@@ -257,7 +261,8 @@ def main(windows, width):
                     
                 elif spot == end:
                     end = None
-                    
+            
+            # SPACE untuk menjalankan algoritma A* (A Star) dan tombol C untuk reset ke awal
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE and start and end:
                     print("clicked")
