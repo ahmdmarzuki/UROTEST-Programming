@@ -17,6 +17,10 @@ ORANGE = (255, 165, 0)
 GREY = (128, 128, 128)
 TURQUOISE = (64, 224, 208)
 
+
+
+# Class Spot mendefinisikan setiap warna grid(warna start point, end poing, barrier, dll)
+# Class ini juga memuat fungsi update_neighbors untuk scanning grid disekitar start point dan akan terus melebar hingga mencapai end point
 class Spot():
     def __init__ (self, row, col, width, total_rows):
         self.row = row
@@ -69,7 +73,10 @@ class Spot():
     
     def draw(self, windows):
         pygame.draw.rect(windows, self.color, (self.x, self.y, self.width, self.width))
-        
+    
+    
+    
+    # function update_neighbors akan meng update spot spot di sekitar star point dan akan melebar sampai mencapai end point
     def update_neighbors(self, grid):
         self.neighbors = []
         
@@ -89,6 +96,8 @@ class Spot():
     def __lt__ (self, other):
         return False
     
+    
+# function h() mendefinisikan jarak dari point 1 (p1) ke point 2 (p2)
 def h(p1, p2):
     x1, y1 = p1
     x2, y2 = p2
@@ -100,6 +109,8 @@ def algorithm(draw, grid, start, end):
     open_set.put(())
     
 
+
+# function make_grid akan membuat grid yang nantinya menjadi media dari Spot
 def make_grid(rows, width):
     grid = []
     gap = width // rows
@@ -112,6 +123,9 @@ def make_grid(rows, width):
             
     return grid
 
+
+
+# function draw_grid akan menggambarkan grid(garis garis) pembatas di setiap Spot
 def draw_grid(windows, rows, width):
     gap = width // rows
     for i in range(rows):
@@ -119,6 +133,8 @@ def draw_grid(windows, rows, width):
         for j in range(rows):
             pygame.draw.line(windows, GREY, (j * gap, 0), (j * gap, width))
 
+
+# function draw akan menjalankan function draw_grid mewarnainya dengan warna putih dan meng update display nya
 def draw(win, grid, rows, width):
     win.fill(WHITE)
     
@@ -129,6 +145,8 @@ def draw(win, grid, rows, width):
     draw_grid(win, rows, width)
     pygame.display.update()
     
+    
+# function get_clicked_pos akan mengambil posisi ketika left click mouse ditekan
 def get_clicked_pos(pos, rows, width):
     gap = width // rows
     y, x = pos
@@ -138,6 +156,9 @@ def get_clicked_pos(pos, rows, width):
     
     return row, col
 
+
+
+# function main yang menjadi pusat menjalankan function-function yang lain 
 def main(windows, width):
     ROWS = 50
     grid = make_grid(ROWS, width)
@@ -148,6 +169,8 @@ def main(windows, width):
     run = True
     started = False
     
+    
+    
     while run:
         draw(windows, grid, ROWS, width)
         for event in pygame.event.get():
@@ -157,6 +180,8 @@ def main(windows, width):
             if started:
                 continue
             
+            
+            # 
             if pygame.mouse.get_pressed()[0]:
                 pos = pygame.mouse.get_pos()
                 row, col = get_clicked_pos(pos, ROWS, width)
@@ -195,7 +220,10 @@ def main(windows, width):
                     
                 
     pygame.QUIT
-    
+
+
+
+# menjalankan function main
 main(windows, WIDTH)
     
     
