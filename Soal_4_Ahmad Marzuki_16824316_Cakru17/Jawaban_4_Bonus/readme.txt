@@ -9,7 +9,8 @@ yang terakhir ada nilai f(n), yaitu akumulasi dari nilai g(n) dan h(n) ----> f(n
 Algoritma A* akan memilih nilai f(n) terkecil, melebar ke node lain dan memperbarui nilai g(n) dan h(n) untuk setiap node, proses ini akan berlanjut sampai ke titik tujuan.
 
 key:
-LEFT CLICK MOUSE = untuk menggambar start point, end point, dan barrier.
+LEFT MOUSE BUTTON = untuk menggambar start point, end point, dan barrier.
+RIGHT MOUSE BUTTON = Menghapus spot yang sudah Digambar.
 SPACE = untuk menjalankan algoritma Ketika start point dan end point sudah Digambar.
 C = reset.
 
